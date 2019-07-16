@@ -2,50 +2,39 @@
 
 public class Ship : MonoBehaviour
 {
-    [SerializeField] private float speed = 1f;
-    private float xInput;
-    private Ball ball;
-    private Rigidbody rb;
-    private State currentState;
+    [SerializeField] private float defaultSpeed = 10f;
+    public float DefaultSpeed { get => defaultSpeed; }
 
-    public Vector3 Velocity { get; private set; }
+    public Ball Ball { get; private set; }
+    public ShipState currentState { get; private set; }
 
     void Start()
     {
-        ball = GetComponentInChildren<Ball>();
-        rb = ball.GetComponent<Rigidbody>();
+        Ball = GetComponentInChildren<Ball>();
+        SwitchState(new ShipStateDefault());
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("expandPU"))
+    //    {
+    //    }
+    //}
 
     void Update()
     {
-        //currentState.OnUpdate();
-        Movement();
-        ShootBall();
+        currentState.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            SwitchState(new ShipStateFastship());
+        }
     }
 
-    private void Movement()
+    public void SwitchState(ShipState state)
     {
-        xInput = Input.GetAxis("Horizontal");
-        Vector3 newPos = transform.position;
-
-        Velocity = xInput * Time.deltaTime * speed * Vector3.right;
-        newPos += Velocity;
-        if (newPos.x < -4f)
-        {
-            newPos = new Vector3(-4f, transform.position.y, transform.position.z);
-        }
-        else if (newPos.x > 4f)
-        {
-            newPos = new Vector3(4f, transform.position.y, transform.position.z);
-        }
-        transform.position = newPos;
-    }
-
-    private void ShootBall()
-    {
-        if (Input.GetButtonDown("Jump"))
-        {
-            ball.Shoot();
-        }
-    }
+        currentState?.OnStateExit();
+        currentState = state;
+        currentState.Ship = this;
+        currentState.OnStateEnter();
+    } 
 }
