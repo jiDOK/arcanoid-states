@@ -2,20 +2,21 @@
 
 public class Ball : MonoBehaviour
 {
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float maxStartAngleOffset = 5f;
-    [SerializeField] private float minStartAngleOffset = 15;
-    [Range(0f, 1f)][SerializeField] private float playerBias = 0.25f;
+    [Range(0f, 1f)] [SerializeField] private float playerBias = 0.25f;
+    [SerializeField] private float defaultSpeed = 10f;
+    public float DefaultSpeed { get => defaultSpeed; }
     private Rigidbody rb;
     private Ship player;
     private float startYpos;
     private Transform playerTransform;
-
     private Vector3 initialVel;
     private Vector3 lastFrameVel;
     private bool wasShot;
 
-    public void Shoot()
+    private float speed;
+    public float Speed { get => speed; set => speed = value; }
+
+    public void Shoot(float minStartAngleOffset,float maxStartAngleOffset)
     {
         if (wasShot) { return; }
         wasShot = true;
@@ -23,13 +24,13 @@ public class Ball : MonoBehaviour
         rb.isKinematic = false;
         float randSign = Mathf.Sign(Random.Range(-1, 1));
         float angle = randSign * Random.Range(minStartAngleOffset, maxStartAngleOffset);
-        //Debug.Log($"sign: {randSign}, min: {minStartAngleOffset}, max: {maxStartAngleOffset}, angle:{angle}");
         Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
         rb.velocity = (rot * Vector3.up) * speed;
     }
 
     private void Start()
     {
+        speed = defaultSpeed;
         startYpos = transform.position.y;
         rb = GetComponent<Rigidbody>();
         playerTransform = transform.parent;

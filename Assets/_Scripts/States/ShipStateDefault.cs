@@ -3,14 +3,14 @@
 [System.Serializable]
 public class ShipStateDefault : ShipState
 {
-    protected float speed;
     protected float xInput;
+    protected float speed = 10f;
+    protected float inputMultiplier = 1f;
 
     public override Vector3 Velocity { get; protected set; }
 
     public override void OnStateEnter()
     {
-        speed = Ship.DefaultSpeed;
     }
 
     public override void OnStateExit()
@@ -25,7 +25,7 @@ public class ShipStateDefault : ShipState
 
     private void Movement()
     {
-        xInput = Input.GetAxis("Horizontal");
+        xInput = inputMultiplier * Input.GetAxis("Horizontal");
         Vector3 newPos = Ship.transform.position;
 
         Velocity = xInput * Time.deltaTime * speed * Vector3.right;
@@ -45,7 +45,7 @@ public class ShipStateDefault : ShipState
     {
         if (Input.GetButtonDown("Jump"))
         {
-            Ship.Ball.Shoot();
+            Ship.Ball.Shoot(Ship.MinBallAngleOffset, Ship.MaxBallAngleOffset);
         }
     }
 

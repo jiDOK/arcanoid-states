@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipStateExpand : MonoBehaviour
+public class ShipStateExpand : ShipStateDefault
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void OnStateEnter()
     {
-        
+        Ship.ShipMesh.transform.localScale += new Vector3(1f, 0f, 0f);
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void OnStateExit()
     {
-        
+        Ship.ShipMesh.transform.localScale = Ship.DefaultShipScale;
     }
 }

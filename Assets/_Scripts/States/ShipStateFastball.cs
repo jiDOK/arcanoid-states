@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipStateFastball : MonoBehaviour
+public class ShipStateFastball : ShipStateDefault
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void OnStateEnter()
     {
-        
+        Ship.Ball.Speed *= 2f;
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void OnStateExit()
     {
-        
+        Ship.Ball.Speed = Ship.Ball.DefaultSpeed;
     }
 }
