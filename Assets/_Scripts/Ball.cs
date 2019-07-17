@@ -6,13 +6,15 @@ public class Ball : MonoBehaviour
     [SerializeField] private float defaultSpeed = 10f;
     public float DefaultSpeed { get => defaultSpeed; }
     private Rigidbody rb;
-    private Ship player;
     private float startYpos;
-    private Transform playerTransform;
     private Vector3 initialVel;
     private Vector3 lastFrameVel;
     private bool wasShot;
 
+    private Ship player;
+    public Ship Player { set => player = value; }
+    private Transform playerTransform;
+    public Transform PlayerTransform { set => playerTransform = value; }
     private float speed;
     public float Speed { get => speed; set => speed = value; }
 
@@ -20,7 +22,8 @@ public class Ball : MonoBehaviour
     {
         if (wasShot) { return; }
         wasShot = true;
-        transform.parent = null;
+        transform.parent = player.BallParent;
+        rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
         float randSign = Mathf.Sign(Random.Range(-1, 1));
         float angle = randSign * Random.Range(minStartAngleOffset, maxStartAngleOffset);
@@ -28,13 +31,15 @@ public class Ball : MonoBehaviour
         rb.velocity = (rot * Vector3.up) * speed;
     }
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     private void Start()
     {
         speed = defaultSpeed;
         startYpos = transform.position.y;
-        rb = GetComponent<Rigidbody>();
-        playerTransform = transform.parent;
-        player = playerTransform.GetComponent<Ship>();
     }
 
     private void Update()
@@ -69,7 +74,7 @@ public class Ball : MonoBehaviour
         rb.velocity = newDir * speed;
     }
 
-    private void Reset()
+    public void Reset()
     {
         rb.isKinematic = true;
         rb.velocity = Vector3.zero;

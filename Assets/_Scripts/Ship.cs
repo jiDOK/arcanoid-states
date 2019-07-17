@@ -2,8 +2,9 @@
 
 public class Ship : MonoBehaviour
 {
+    private Vector3 startPos;
     [SerializeField] private Transform ballParent;
-    public Transform BallParent;
+    public Transform BallParent { get => ballParent; }
     [SerializeField] private Ball ballPrefab;
     public Ball BallPrefab { get => ballPrefab; }
     [SerializeField] private float maxBallAngleOffset= 5f;
@@ -22,7 +23,10 @@ public class Ship : MonoBehaviour
 
     void Start()
     {
+        startPos = transform.position;
         Ball = GetComponentInChildren<Ball>();
+        Ball.Player = this;
+        Ball.PlayerTransform = transform;
         SwitchState(new ShipStateDefault());
     }
 
@@ -52,6 +56,10 @@ public class Ship : MonoBehaviour
         {
             SwitchState(new ShipStateInputSwitch());
         }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SwitchState(new ShipStateMultiball());
+        }
     }
 
     public void SwitchState(ShipState state)
@@ -60,5 +68,11 @@ public class Ship : MonoBehaviour
         currentState = state;
         currentState.Ship = this;
         currentState.OnStateEnter();
-    } 
+    }
+
+    public void Reset()
+    {
+        transform.position = startPos;
+        Ball.Reset();
+    }
 }

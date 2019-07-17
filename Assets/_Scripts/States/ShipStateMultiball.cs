@@ -13,6 +13,10 @@ public class ShipStateMultiball : ShipStateDefault
                 Ship.Ball.transform.position, 
                 Quaternion.identity, 
                 Ship.BallParent);
+            ball.Player = Ship;
+            ball.PlayerTransform = Ship.transform;
+            ball.Speed = 10f;
+            ball.Shoot(0f, 360f);
         }
     }
 }

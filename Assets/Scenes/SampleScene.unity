@@ -2417,6 +2417,36 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1249541686}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1260371156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1260371157}
+  m_Layer: 0
+  m_Name: BallParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1260371157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1260371156}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.5528912, y: 5.9649167, z: 1.7597399}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1354730102
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3164,9 +3194,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54d624d1043078f42b1d67d36b3c3414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballParent: {fileID: 0}
-  BallParent: {fileID: 0}
-  ballPrefab: {fileID: 0}
+  ballParent: {fileID: 1260371157}
+  ballPrefab: {fileID: 7500934185223478522, guid: a359a515d0dcb064493788bb7c189c76,
+    type: 3}
   maxBallAngleOffset: 5
   minBallAngleOffset: 15
   defaultShipScale: {x: 1.2, y: 0.324, z: 1}
