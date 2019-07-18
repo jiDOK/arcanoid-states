@@ -2,34 +2,24 @@
 
 public class Ball : MonoBehaviour
 {
-    [Range(0f, 1f)] [SerializeField] private float playerBias = 0.25f;
+    [Range(0f, 1f)] [SerializeField] private float shipBias = 0.25f;
+
     [SerializeField] private float defaultSpeed = 10f;
     public float DefaultSpeed { get => defaultSpeed; }
+    [SerializeField] private float minStartAngleOffset = 15;
+    public float MinBallAngleOffset => minStartAngleOffset;
+    [SerializeField] private float maxStartAngleOffset = 5f;
+    public float MaxBallAngleOffset => maxStartAngleOffset;
+
     private Rigidbody rb;
-    private float startYpos;
     private Vector3 initialVel;
     private Vector3 lastFrameVel;
     private bool wasShot;
 
-    private Ship player;
-    public Ship Player { set => player = value; }
-    private Transform playerTransform;
-    public Transform PlayerTransform { set => playerTransform = value; }
-    private float speed;
+    private Ship ship;
+    public Ship Ship { set => ship = value; }
+    private float speed = 10f;
     public float Speed { get => speed; set => speed = value; }
-
-    public void Shoot(float minStartAngleOffset,float maxStartAngleOffset)
-    {
-        if (wasShot) { return; }
-        wasShot = true;
-        transform.parent = player.BallParent;
-        rb = GetComponent<Rigidbody>();
-        rb.isKinematic = false;
-        float randSign = Mathf.Sign(Random.Range(-1, 1));
-        float angle = randSign * Random.Range(minStartAngleOffset, maxStartAngleOffset);
-        Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
-        rb.velocity = (rot * Vector3.up) * speed;
-    }
 
     private void Awake()
     {
@@ -39,7 +29,6 @@ public class Ball : MonoBehaviour
     private void Start()
     {
         speed = defaultSpeed;
-        startYpos = transform.position.y;
     }
 
     private void Update()
@@ -49,37 +38,52 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        bool withPlayer = collision.collider.CompareTag("player");
-        Bounce(collision.GetContact(0).normal, withPlayer);
+        bool withShip = collision.collider.CompareTag("ship");
+        Bounce(collision.GetContact(0).normal, withShip);
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Shoot()
     {
-        if (other.CompareTag("void"))
-        {
-            Reset();
-        }
+        Shoot(minStartAngleOffset, maxStartAngleOffset);
     }
 
-    private void Bounce(Vector3 normal, bool withPlayer)
+    public void Shoot(float minStartAngleOffset, float maxStartAngleOffset)
+    {
+        if (wasShot) { return; }
+        wasShot = true;
+        transform.parent = null;
+        //rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        Vector3 dir = RotateBallDirRandom(Vector3.up, minStartAngleOffset, maxStartAngleOffset);
+        rb.velocity = dir * speed;
+    }
+
+    Vector3 RotateBallDirRandom(Vector3 dir, float minStartAngleOffset, float maxStartAngleOffset)
+    {
+        float randSign = Mathf.Sign(Random.Range(-1f, 1f));
+        float angle = randSign * Random.Range(minStartAngleOffset, maxStartAngleOffset);
+        Quaternion rot = Quaternion.AngleAxis(angle, Vector3.forward);
+        return rot * dir;
+    }
+
+    private void Bounce(Vector3 normal, bool withShip)
     {
         Vector3 dir = Vector3.Reflect(lastFrameVel.normalized, normal.normalized);
-        float bias = withPlayer ? playerBias : 0f;
-        Vector3 newDir = Vector3.Lerp(dir, player.currentState.Velocity.normalized, bias).normalized;
-        if (withPlayer)
-        {
-            Debug.DrawRay(transform.position, dir, Color.blue, 3f);
-            Debug.DrawRay(transform.position, newDir, Color.red, 3f);
-        }
+        float bias = withShip ? shipBias : 0f;
+        Vector3 newDir = Vector3.Lerp(dir, ship.currentState.Velocity.normalized, bias).normalized;
         rb.velocity = newDir * speed;
+        // visualize
+        //if (withShip)
+        //{
+        //    Debug.DrawRay(transform.position, dir, Color.blue, 3f);
+        //    Debug.DrawRay(transform.position, newDir, Color.red, 3f);
+        //}
     }
 
-    public void Reset()
+    public void Init()
     {
         rb.isKinematic = true;
         rb.velocity = Vector3.zero;
-        transform.position = new Vector3(playerTransform.position.x, startYpos, playerTransform.position.z);
-        transform.parent = playerTransform;
         wasShot = false;
     }
 }

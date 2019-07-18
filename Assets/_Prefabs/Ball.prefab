@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7500934185223478527
 Transform:
   m_ObjectHideFlags: 0
@@ -121,5 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac69ce4b7d65d2542be47c3188a5f045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBias: 0.25
+  shipBias: 0.25
   defaultSpeed: 10
+  minStartAngleOffset: 15
+  maxStartAngleOffset: 5
+  startYpos: 0.338

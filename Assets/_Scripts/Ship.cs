@@ -1,34 +1,29 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Ship : MonoBehaviour
 {
-    private Vector3 startPos;
-    [SerializeField] private Transform ballParent;
-    public Transform BallParent { get => ballParent; }
-    [SerializeField] private Ball ballPrefab;
-    public Ball BallPrefab { get => ballPrefab; }
-    [SerializeField] private float maxBallAngleOffset= 5f;
-    public float MaxBallAngleOffset => maxBallAngleOffset;
-    [SerializeField] private float minBallAngleOffset= 15;
-    public float MinBallAngleOffset => minBallAngleOffset;
+    [SerializeField] private Vector3 startPos;
+    [SerializeField] private float ballYoffset = 0.338f;
+    [SerializeField] private int numMultiballs = 3;
+    public int NumMultiballs { get => numMultiballs; }
     [SerializeField] private Vector3 defaultShipScale = new Vector3(1.2f, 0.324f, 1);
     public Vector3 DefaultShipScale { get => defaultShipScale; }
     [SerializeField] private Transform shipMesh;
     public Transform ShipMesh { get => shipMesh; }
-    //[SerializeField] private float defaultSpeed = 10f;
-    //public float DefaultSpeed { get => defaultSpeed; }
 
-    public Ball Ball { get; private set; }
+    public Ball Ball { get; set; }
+    public Stack<Ball> BallPool { get; set; } = new Stack<Ball>(4);
     public ShipState currentState { get; private set; }
 
-    void Start()
+
+    public void Init()
     {
-        startPos = transform.position;
-        Ball = GetComponentInChildren<Ball>();
-        Ball.Player = this;
-        Ball.PlayerTransform = transform;
+        transform.position = startPos;
         SwitchState(new ShipStateDefault());
     }
+
+
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -40,6 +35,7 @@ public class Ship : MonoBehaviour
     void Update()
     {
         currentState.OnUpdate();
+        // Test buttons
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SwitchState(new ShipStateFastship());
@@ -70,9 +66,22 @@ public class Ship : MonoBehaviour
         currentState.OnStateEnter();
     }
 
-    public void Reset()
+    public void SpawnOnShip(Ball ball)
     {
-        transform.position = startPos;
-        Ball.Reset();
+        Ball = ball;
+        ball.gameObject.SetActive(true);
+        ball.transform.position = new Vector3(transform.position.x, transform.position.y + ballYoffset, transform.position.z);
+        ball.transform.parent = transform;
+    }
+
+    public void SpawnMultiballs()
+    {
+        for (int i = 0; i < numMultiballs; i++)
+        {
+            Ball mb = BallPool.Pop();
+            mb.gameObject.SetActive(true);
+            mb.transform.position = Ball.transform.position;
+            mb.Shoot(0f, 360f);
+        }
     }
 }
