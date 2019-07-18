@@ -1,15 +1,25 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField] Settings settings;
-    [SerializeField] private Ball ballPrefab;
-    [SerializeField] private int startNumShips = 3;
+    [System.Serializable]
+    public class Settings
+    {
+        public int startNumShips = 3;
+        public Vector3 shipStartPos;
+        public Ball ballPrefab;
+        public float ballYoffset = 0.338f;
+        public int numMultiballs = 3;
+    }
+    [SerializeField] private Settings settings;
 
+    public Stack<Ball> BallPool { get; set; } = new Stack<Ball>(4);
     private Ship ship;
     private Drain drain;
     private int score;
     private int numShipsLeft;
+    private Transform activeBalls;
 
     void Awake()
     {
@@ -18,53 +28,75 @@ public class Game : MonoBehaviour
 
     private void Init()
     {
-        ship = FindObjectOfType<Ship>();
+        activeBalls = GameObject.Find("Active Balls").transform;
         drain = FindObjectOfType<Drain>();
         drain.BallInDrain += OnBallInDrain;
-        numShipsLeft = startNumShips;
-        ship.Init();
-        for (int i = 0; i < ship.NumMultiballs + 1; i++)
+        ship = FindObjectOfType<Ship>();
+        ShipStateMultiball.MultiballTriggered += OnMultiballTriggered;
+        ship.Init(settings.shipStartPos);
+        numShipsLeft = settings.startNumShips;
+        for (int i = 0; i < settings.numMultiballs + 1; i++)
         {
-            Ball ball = Instantiate<Ball>(ballPrefab);
+            Ball ball = Instantiate<Ball>(settings.ballPrefab);
             ball.Ship = ship;
             ball.transform.parent = ship.transform;
-            ship.BallPool.Push(ball);
+            BallPool.Push(ball);
         }
-        ship.SpawnOnShip(ship.BallPool.Pop());
+        SpawnOnShip(BallPool.Pop());
     }
 
     private void OnDisable()
     {
         drain.BallInDrain -= OnBallInDrain;
+        ShipStateMultiball.MultiballTriggered += OnMultiballTriggered;
     }
 
     public void OnBallInDrain(Ball b)
     {
-        if (ship.BallPool.Count < ship.NumMultiballs)
+        if (BallPool.Count < settings.numMultiballs)
         {
             // not last ball - put back in pool
             b.Init();
             b.gameObject.SetActive(false);
-            ship.BallPool.Push(b);
+            BallPool.Push(b);
             b.transform.parent = ship.transform;
+            if(BallPool.Count == settings.numMultiballs)
+            {
+                //ship.Ball = ship.GetComponentInChildren<Ball>();
+                ship.Ball = activeBalls.GetComponentInChildren<Ball>();
+            }
         }
         else if (numShipsLeft > 0)
         {
             numShipsLeft--;
-            ship.Init();
+            ship.Init(settings.shipStartPos);
             b.Init();
-            ship.SpawnOnShip(b);
+            SpawnOnShip(b);
         }
         else
         {
             // GameOver
         }
     }
+
+    public void SpawnOnShip(Ball ball)
+    {
+        ship.Ball = ball;
+        ball.gameObject.SetActive(true);
+        ball.transform.position = new Vector3(ship.transform.position.x, ship.transform.position.y + settings.ballYoffset, ship.transform.position.z);
+        ball.transform.parent = ship.transform;
+    }
+
+    public void OnMultiballTriggered()
+    {
+        for (int i = 0; i < settings.numMultiballs; i++)
+        {
+            Ball mb = BallPool.Pop();
+            mb.gameObject.SetActive(true);
+            mb.transform.position = ship.Ball.transform.position;
+            mb.transform.parent = activeBalls;
+            mb.Shoot(0f, 360f);
+        }
+    }
 }
 
-[System.Serializable]
-public class Settings
-{
-    [SerializeField] private Ball ballPrefab;
-    [SerializeField] private int startNumShips = 3;
-}

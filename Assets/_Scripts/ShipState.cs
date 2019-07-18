@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public abstract class ShipState
 {
@@ -100,8 +101,10 @@ public class ShipStateInputSwitch : ShipStateDefault
 
 public class ShipStateMultiball : ShipStateDefault
 {
+    public static event Action MultiballTriggered;
     public override void OnStateEnter()
     {
-        Ship.SpawnMultiballs();//TODO: (bug) letzter Ball muss ball werden... sonst kann es keine 2 Multiballs hintereinader geben
+        //TODO: (bug) letzter Ball muss ball werden... sonst kann es keine 2 Multiballs hintereinader geben
+        MultiballTriggered?.Invoke();
     }
 }

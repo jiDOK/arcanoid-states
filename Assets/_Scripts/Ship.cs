@@ -1,29 +1,21 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ship : MonoBehaviour
 {
-    [SerializeField] private Vector3 startPos;
-    [SerializeField] private float ballYoffset = 0.338f;
-    [SerializeField] private int numMultiballs = 3;
-    public int NumMultiballs { get => numMultiballs; }
     [SerializeField] private Vector3 defaultShipScale = new Vector3(1.2f, 0.324f, 1);
     public Vector3 DefaultShipScale { get => defaultShipScale; }
     [SerializeField] private Transform shipMesh;
     public Transform ShipMesh { get => shipMesh; }
 
     public Ball Ball { get; set; }
-    public Stack<Ball> BallPool { get; set; } = new Stack<Ball>(4);
     public ShipState currentState { get; private set; }
 
 
-    public void Init()
+    public void Init(Vector3 startPos)
     {
         transform.position = startPos;
         SwitchState(new ShipStateDefault());
     }
-
-
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -52,7 +44,7 @@ public class Ship : MonoBehaviour
         {
             SwitchState(new ShipStateInputSwitch());
         }
-        if (Input.GetKeyDown(KeyCode.Alpha5))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             SwitchState(new ShipStateMultiball());
         }
@@ -66,22 +58,4 @@ public class Ship : MonoBehaviour
         currentState.OnStateEnter();
     }
 
-    public void SpawnOnShip(Ball ball)
-    {
-        Ball = ball;
-        ball.gameObject.SetActive(true);
-        ball.transform.position = new Vector3(transform.position.x, transform.position.y + ballYoffset, transform.position.z);
-        ball.transform.parent = transform;
-    }
-
-    public void SpawnMultiballs()
-    {
-        for (int i = 0; i < numMultiballs; i++)
-        {
-            Ball mb = BallPool.Pop();
-            mb.gameObject.SetActive(true);
-            mb.transform.position = Ball.transform.position;
-            mb.Shoot(0f, 360f);
-        }
-    }
 }
