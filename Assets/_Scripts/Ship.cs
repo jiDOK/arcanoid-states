@@ -44,7 +44,7 @@ public class Ship : MonoBehaviour
         {
             SwitchState(new ShipStateInputSwitch());
         }
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             SwitchState(new ShipStateMultiball());
         }

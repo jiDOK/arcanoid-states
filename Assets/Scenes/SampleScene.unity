@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.2850269, g: 0.3713935, b: 0.49601045, a: 1}
+  m_IndirectSpecularColor: {r: 0.28502697, g: 0.37139347, b: 0.49601266, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2471,12 +2471,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    startNumShips: 20
-    shipStartPos: {x: 0, y: -0.338, z: 0}
-    ballPrefab: {fileID: 7500934185223478522, guid: a359a515d0dcb064493788bb7c189c76,
+    StartNumShips: 3
+    ShipStartPos: {x: 0, y: -0.338, z: 0}
+    BallPrefab: {fileID: 7500934185223478522, guid: a359a515d0dcb064493788bb7c189c76,
       type: 3}
-    ballYoffset: 0.338
-    numMultiballs: 3
+    BallYOffset: 0.338
+    NumMultiballs: 4
 --- !u!4 &1288193612
 Transform:
   m_ObjectHideFlags: 0

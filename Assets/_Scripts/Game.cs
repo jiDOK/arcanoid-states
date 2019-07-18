@@ -4,22 +4,22 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour
 {
     [System.Serializable]
-    public class Settings
+    private class Settings
     {
-        public int startNumShips = 3;
-        public Vector3 shipStartPos;
-        public Ball ballPrefab;
-        public float ballYoffset = 0.338f;
-        public int numMultiballs = 3;
+        public int StartNumShips = 3;
+        public Vector3 ShipStartPos;
+        public Ball BallPrefab;
+        public float BallYOffset = 0.338f;
+        public int NumMultiballs = 3;
     }
     [SerializeField] private Settings settings;
 
-    public Stack<Ball> BallPool { get; set; } = new Stack<Ball>(4);
     private Ship ship;
     private Drain drain;
     private int score;
     private int numShipsLeft;
     private Transform activeBalls;
+    public Stack<Ball> BallPool { get; set; } = new Stack<Ball>(4);
 
     void Awake()
     {
@@ -33,11 +33,11 @@ public class Game : MonoBehaviour
         drain.BallInDrain += OnBallInDrain;
         ship = FindObjectOfType<Ship>();
         ShipStateMultiball.MultiballTriggered += OnMultiballTriggered;
-        ship.Init(settings.shipStartPos);
-        numShipsLeft = settings.startNumShips;
-        for (int i = 0; i < settings.numMultiballs + 1; i++)
+        ship.Init(settings.ShipStartPos);
+        numShipsLeft = settings.StartNumShips;
+        for (int i = 0; i < settings.NumMultiballs + 1; i++)
         {
-            Ball ball = Instantiate<Ball>(settings.ballPrefab);
+            Ball ball = Instantiate<Ball>(settings.BallPrefab);
             ball.Ship = ship;
             ball.transform.parent = ship.transform;
             BallPool.Push(ball);
@@ -48,19 +48,19 @@ public class Game : MonoBehaviour
     private void OnDisable()
     {
         drain.BallInDrain -= OnBallInDrain;
-        ShipStateMultiball.MultiballTriggered += OnMultiballTriggered;
+        ShipStateMultiball.MultiballTriggered -= OnMultiballTriggered;
     }
 
     public void OnBallInDrain(Ball b)
     {
-        if (BallPool.Count < settings.numMultiballs)
+        if (BallPool.Count < settings.NumMultiballs)
         {
             // not last ball - put back in pool
             b.Init();
             b.gameObject.SetActive(false);
             BallPool.Push(b);
             b.transform.parent = ship.transform;
-            if(BallPool.Count == settings.numMultiballs)
+            if(BallPool.Count == settings.NumMultiballs)
             {
                 //ship.Ball = ship.GetComponentInChildren<Ball>();
                 ship.Ball = activeBalls.GetComponentInChildren<Ball>();
@@ -69,7 +69,7 @@ public class Game : MonoBehaviour
         else if (numShipsLeft > 0)
         {
             numShipsLeft--;
-            ship.Init(settings.shipStartPos);
+            ship.Init(settings.ShipStartPos);
             b.Init();
             SpawnOnShip(b);
         }
@@ -83,13 +83,13 @@ public class Game : MonoBehaviour
     {
         ship.Ball = ball;
         ball.gameObject.SetActive(true);
-        ball.transform.position = new Vector3(ship.transform.position.x, ship.transform.position.y + settings.ballYoffset, ship.transform.position.z);
+        ball.transform.position = new Vector3(ship.transform.position.x, ship.transform.position.y + settings.BallYOffset, ship.transform.position.z);
         ball.transform.parent = ship.transform;
     }
 
     public void OnMultiballTriggered()
     {
-        for (int i = 0; i < settings.numMultiballs; i++)
+        for (int i = 0; i < settings.NumMultiballs; i++)
         {
             Ball mb = BallPool.Pop();
             mb.gameObject.SetActive(true);
