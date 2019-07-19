@@ -7,8 +7,10 @@ public class Drain : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // trigger event
         var ball = other.GetComponent<Ball>();
-        BallInDrain?.Invoke(ball);
+        if (ball != null)
+        {
+            BallInDrain?.Invoke(ball);
+        }
     }
 }

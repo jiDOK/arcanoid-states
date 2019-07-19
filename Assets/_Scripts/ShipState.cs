@@ -10,6 +10,7 @@ public abstract class ShipState
     public abstract void OnUpdate();
 }
 
+
 public class ShipStateDefault : ShipState
 {
     protected float xInput;
@@ -20,6 +21,7 @@ public class ShipStateDefault : ShipState
 
     public override void OnStateEnter()
     {
+        Debug.Log("Ship switched to DefaultState!");
     }
 
     public override void OnStateExit()

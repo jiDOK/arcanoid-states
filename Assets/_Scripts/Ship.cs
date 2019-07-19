@@ -14,7 +14,7 @@ public class Ship : MonoBehaviour
     public void Init(Vector3 startPos)
     {
         transform.position = startPos;
-        SwitchState(new ShipStateDefault());
+        //SwitchState(new ShipStateDefault());
     }
 
     //private void OnTriggerEnter(Collider other)
