@@ -37,4 +37,4 @@ public class PowerUp : MonoBehaviour
     }
 }
 
-public enum PU { Expand, Fastball, Fastship, InputSwitch, Multiball }
+public enum PU { None, Expand, Fastship, Multiball }

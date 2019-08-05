@@ -28,26 +28,26 @@ public class Ship : MonoBehaviour
     {
         currentState.OnUpdate();
         // Test buttons
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SwitchState(new ShipStateFastship());
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SwitchState(new ShipStateExpand());
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SwitchState(new ShipStateFastball());
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            SwitchState(new ShipStateInputSwitch());
-        }
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
-        {
-            SwitchState(new ShipStateMultiball());
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha1))
+        //{
+        //    SwitchState(new ShipStateFastship());
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    SwitchState(new ShipStateExpand());
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha3))
+        //{
+        //    SwitchState(new ShipStateFastball());
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha4))
+        //{
+        //    SwitchState(new ShipStateInputSwitch());
+        //}
+        //if (Input.GetKeyDown(KeyCode.LeftAlt))
+        //{
+        //    SwitchState(new ShipStateMultiball());
+        //}
     }
 
     public void SwitchState(ShipState state)

@@ -21,12 +21,10 @@ public class Game : MonoBehaviour
     private class ShipStatePool
     {
         public ShipState[] shipStates = new[] {
+            new ShipStateDefault(),
             new ShipStateExpand(),
-            new ShipStateFastball(),
             new ShipStateFastship(),
-            new ShipStateInputSwitch(),
             new ShipStateMultiball(),
-            new ShipStateDefault()
         };
     }
     private ShipStatePool shipStatePool;
@@ -66,7 +64,7 @@ public class Game : MonoBehaviour
         Block.BlockHit += OnBlockHit;
         ship = FindObjectOfType<Ship>();
         ship.Init(settings.ShipStartPos);
-        ship.SwitchState(shipStatePool.shipStates[0]);
+        ship.SwitchState(shipStatePool.shipStates[(int)PU.None]);
         numShipsLeft = settings.StartNumShips;
         curTimeToPU = UnityEngine.Random.Range(settings.MinTimeBetweenPUs, settings.MaxTimeBetweenPUs);
         for (int i = 0; i < settings.NumMultiballs + 1; i++)
@@ -93,7 +91,7 @@ public class Game : MonoBehaviour
         {
             puTimer = 0f;
             puSpawned = true;
-            var randIdx = UnityEngine.Random.Range(0, settings.PowerUps.Length);
+            var randIdx = UnityEngine.Random.Range(0, settings.PowerUps.Length + 1);
             Instantiate<PowerUp>(settings.PowerUps[randIdx], block.transform.position, Quaternion.identity);
         }
     }
@@ -102,10 +100,6 @@ public class Game : MonoBehaviour
     {
         puSpawned = false;
         ship.SwitchState(shipStatePool.shipStates[(int)pu]);
-        //if (ship.currentState != shipStatePool.shipStates[(int)PU.Multiball])
-        //{
-        //    ship.SwitchState(shipStatePool.shipStates[(int)pu]);
-        //}
     }
 
     public void OnPUDestroyed()
@@ -134,7 +128,7 @@ public class Game : MonoBehaviour
             ship.Init(settings.ShipStartPos);
             b.Init();
             SpawnOnShip(b);
-            ship.SwitchState(shipStatePool.shipStates[5]);
+            ship.SwitchState(shipStatePool.shipStates[(int)PU.None]);
             NewShip?.Invoke();
         }
         else
